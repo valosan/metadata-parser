@@ -15,7 +15,16 @@ function parsePageMetadata(getMetadata, metadataRuleSets, document, url) {
           'meta[property="article:published_time"]',
           element => element.getAttribute("content")
         ],
-        ['meta[name="datePublished"]', element => element.getAttribute("content")]
+        ['meta[name="datePublished"]', element => element.getAttribute("content")],
+        ['meta[name="iso-8601-publish-date"]', element => element.getAttribute("content")]
+      ]
+    },
+    locale: {
+      rules: [
+        [
+          'meta[property="og:locale"]',
+          element => element.getAttribute("content")
+        ]
       ]
     }
   });
@@ -24,7 +33,6 @@ function parsePageMetadata(getMetadata, metadataRuleSets, document, url) {
   if (ld && ld.textContent) {
     try {
       const info = JSON.parse(ld.textContent);
-      console.info("Parsing ld+json script", info);
       if (info["@graph"]) {
         info["@graph"].forEach(l => {
           if (l.datePublished) {
