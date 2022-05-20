@@ -2,7 +2,32 @@
 
 Bundles https://www.npmjs.com/package/page-metadata-parser so it can work when injected into Chrome browser context (i.e. puppeteer)
 
+Provides additional `ld+json` parsing for better results.
+
+
 ## Usage
+
+```ts
+import { getMetadata, metadataRuleSets } from "page-metadata-parser";
+
+export interface PageMetadata {
+  title?: string;
+  // FIXME: Valosan extra
+  published?: string;
+  icon?: string;
+  image?: string;
+  keywords?: string;
+  url?: string;
+  provider?: string;
+  type?: string;
+  language?: string;
+  description?: string;
+}
+
+const metadata: PageMetadata = parsePageMetadata(getMetadata, metadataRuleSets, document, url);
+```
+
+### Usage in ChromeDriver
 
 ```js
 const metadataScript = fs.readFileSync(

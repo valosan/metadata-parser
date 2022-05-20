@@ -1,6 +1,6 @@
 {
   "name": "@valosan/metadata-parser",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "private": false,
   "description": "Combined metadata parser to read title, image, description from html page",
   "scripts": {
@@ -12,8 +12,13 @@
     "page-metadata-parser": "^1.1.4"
   },
   "devDependencies": {
+    "domino": "^2.1.6",
+    "nodemon": "^2.0.16",
     "webpack": "^5.51.1",
     "webpack-cli": "^4.8.0"
   },
-  "files": ["*.js", "README.md"]
+  "files": [
+    "*.js",
+    "README.md"
+  ]
 }

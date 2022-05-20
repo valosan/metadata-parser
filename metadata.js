@@ -16,7 +16,9 @@ function parsePageMetadata(getMetadata, metadataRuleSets, document, url) {
           element => element.getAttribute("content")
         ],
         ['meta[name="datePublished"]', element => element.getAttribute("content")],
-        ['meta[name="iso-8601-publish-date"]', element => element.getAttribute("content")]
+        ['meta[name="iso-8601-publish-date"]', element => element.getAttribute("content")],
+        ['meta[name="cXenseParse:recs:publishtime"]', element => element.getAttribute("content")],
+        ['meta[name="sailthru.date"]', element => element.getAttribute("content")]
       ]
     },
     locale: {
@@ -32,6 +34,7 @@ function parsePageMetadata(getMetadata, metadataRuleSets, document, url) {
   const ld = document.querySelector('script[type="application/ld+json"]');
   if (ld && ld.textContent) {
     try {
+      console.info("Parsing LD+JSON", ld.textContent)
       const info = JSON.parse(ld.textContent);
       if (info["@graph"]) {
         info["@graph"].forEach(l => {
@@ -55,4 +58,4 @@ try {
   module.exports = {
     parsePageMetadata
   };
-} catch (e) {}
+} catch (e) {} // WHY?
