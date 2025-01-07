@@ -1,48 +1,31 @@
 /* eslint-disable no-console */
+const { getMetadata } = require("./parser");
+const { metadataRuleSets } = require("./ruleSets");
 
 /**
- * Keep in JS for compatibility with puppeteer.
+ * Parse page metadata and also LD+JSON if present.
  *
- * This file is used in screenshot function and injected verbatim
- * into the Chrome browser context.
+ * @param {Document} document
+ * @param {string} url
+ * @returns {import("./types").PageMetadata}
  */
-function parsePageMetadata(getMetadata, metadataRuleSets, document, url) {
-  const metadata = getMetadata(document, url, {
-    ...metadataRuleSets,
-    published: {
-      rules: [
-        [
-          'meta[property="article:published_time"]',
-          element => element.getAttribute("content")
-        ],
-        ['meta[name="datePublished"]', element => element.getAttribute("content")],
-        ['meta[name="iso-8601-publish-date"]', element => element.getAttribute("content")],
-        ['meta[name="cXenseParse:recs:publishtime"]', element => element.getAttribute("content")],
-        ['meta[name="sailthru.date"]', element => element.getAttribute("content")]
-      ]
-    },
-    locale: {
-      rules: [
-        [
-          'meta[property="og:locale"]',
-          element => element.getAttribute("content")
-        ]
-      ]
-    }
-  });
+export function getPageMetadata(document, url) {
+  const metadata = getMetadata(document, url, metadataRuleSets);
 
   const ld = document.querySelector('script[type="application/ld+json"]');
   if (ld && ld.textContent) {
     try {
-      console.info("Parsing LD+JSON", ld.textContent)
       const info = JSON.parse(ld.textContent);
+
       if (info["@graph"]) {
-        info["@graph"].forEach(l => {
+        // @ts-ignore
+        info["@graph"].forEach((l) => {
           if (l.datePublished) {
             metadata.published = l.datePublished;
           }
         });
       }
+
       if (info.datePublished) {
         metadata.published = info.datePublished;
       }
@@ -53,9 +36,3 @@ function parsePageMetadata(getMetadata, metadataRuleSets, document, url) {
 
   return metadata;
 }
-
-try {
-  module.exports = {
-    parsePageMetadata
-  };
-} catch (e) {} // WHY?
